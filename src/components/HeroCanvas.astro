@@ -1,0 +1,243 @@
+---
+---
+
+<canvas id="hero-canvas" class="absolute inset-0 w-full h-full"></canvas>
+
+<script>
+  const canvas = document.getElementById("hero-canvas") as HTMLCanvasElement;
+  const ctx = canvas.getContext("2d")!;
+
+  let width = 0;
+  let height = 0;
+  let particles: Particle[] = [];
+  let time = 0;
+  let phase = 0; // 0 = drifting, 1 = converging to lock, 2 = locked, 3 = dispersing
+
+  const PARTICLE_COUNT = 120;
+  const COLORS = ["#0D65C7", "#60A5FA", "#93C5FD", "#2563EB", "#1E40AF"];
+
+  // Lock shape points (normalised -1 to 1)
+  function getLockPoints(count: number): { x: number; y: number }[] {
+    const points: { x: number; y: number }[] = [];
+
+    // Body rectangle (rounded)
+    const bodyTop = 0.05;
+    const bodyBottom = 0.55;
+    const bodyLeft = -0.3;
+    const bodyRight = 0.3;
+    const bodyCount = Math.floor(count * 0.55);
+
+    for (let i = 0; i < bodyCount; i++) {
+      const t = i / bodyCount;
+      const perimeter = 2 * (bodyRight - bodyLeft) + 2 * (bodyBottom - bodyTop);
+      const p = t * perimeter;
+      const w = bodyRight - bodyLeft;
+      const h = bodyBottom - bodyTop;
+
+      let x: number, y: number;
+      if (p < w) {
+        x = bodyLeft + p;
+        y = bodyTop;
+      } else if (p < w + h) {
+        x = bodyRight;
+        y = bodyTop + (p - w);
+      } else if (p < 2 * w + h) {
+        x = bodyRight - (p - w - h);
+        y = bodyBottom;
+      } else {
+        x = bodyLeft;
+        y = bodyBottom - (p - 2 * w - h);
+      }
+      points.push({ x, y });
+    }
+
+    // Shackle arc
+    const shackleCount = count - bodyCount;
+    for (let i = 0; i < shackleCount; i++) {
+      const angle = Math.PI + (Math.PI * i) / (shackleCount - 1);
+      const rx = 0.2;
+      const ry = 0.25;
+      points.push({
+        x: Math.cos(angle) * rx,
+        y: bodyTop + Math.sin(angle) * ry,
+      });
+    }
+
+    return points;
+  }
+
+  interface Particle {
+    x: number;
+    y: number;
+    targetX: number;
+    targetY: number;
+    driftX: number;
+    driftY: number;
+    vx: number;
+    vy: number;
+    radius: number;
+    color: string;
+    alpha: number;
+    speed: number;
+    angle: number;
+    angleSpeed: number;
+    orbitRadius: number;
+  }
+
+  function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    width = rect.width;
+    height = rect.height;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    ctx.scale(dpr, dpr);
+  }
+
+  function init() {
+    resize();
+    const lockPoints = getLockPoints(PARTICLE_COUNT);
+    particles = [];
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      const lp = lockPoints[i];
+      const cx = width / 2;
+      const cy = height / 2;
+      const scale = Math.min(width, height) * 0.35;
+
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        targetX: cx + lp.x * scale,
+        targetY: cy + lp.y * scale,
+        driftX: Math.random() * width,
+        driftY: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        radius: 1.5 + Math.random() * 2,
+        color: COLORS[Math.floor(Math.random() * COLORS.length)],
+        alpha: 0.3 + Math.random() * 0.5,
+        speed: 0.0003 + Math.random() * 0.0005,
+        angle: Math.random() * Math.PI * 2,
+        angleSpeed: (Math.random() - 0.5) * 0.01,
+        orbitRadius: 20 + Math.random() * 60,
+      });
+    }
+  }
+
+  // Phase timing
+  const DRIFT_DURATION = 6000;
+  const CONVERGE_DURATION = 2500;
+  const LOCKED_DURATION = 3000;
+  const DISPERSE_DURATION = 2000;
+  const TOTAL_CYCLE =
+    DRIFT_DURATION + CONVERGE_DURATION + LOCKED_DURATION + DISPERSE_DURATION;
+
+  function easeInOutCubic(t: number): number {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  }
+
+  function draw(timestamp: number) {
+    time = timestamp;
+    const cycleTime = time % TOTAL_CYCLE;
+
+    let convergence = 0;
+    if (cycleTime < DRIFT_DURATION) {
+      convergence = 0;
+    } else if (cycleTime < DRIFT_DURATION + CONVERGE_DURATION) {
+      convergence = easeInOutCubic(
+        (cycleTime - DRIFT_DURATION) / CONVERGE_DURATION
+      );
+    } else if (cycleTime < DRIFT_DURATION + CONVERGE_DURATION + LOCKED_DURATION) {
+      convergence = 1;
+    } else {
+      convergence =
+        1 -
+        easeInOutCubic(
+          (cycleTime - DRIFT_DURATION - CONVERGE_DURATION - LOCKED_DURATION) /
+            DISPERSE_DURATION
+        );
+    }
+
+    ctx.clearRect(0, 0, width, height);
+
+    // Draw connections when converging
+    if (convergence > 0.3) {
+      ctx.strokeStyle = `rgba(13, 101, 199, ${convergence * 0.08})`;
+      ctx.lineWidth = 0.5;
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 60) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    // Update and draw particles
+    for (const p of particles) {
+      // Organic drift
+      p.angle += p.angleSpeed;
+      p.driftX += p.vx + Math.sin(time * p.speed) * 0.3;
+      p.driftY += p.vy + Math.cos(time * p.speed * 0.7) * 0.3;
+
+      // Wrap around edges with padding
+      if (p.driftX < -50) p.driftX = width + 50;
+      if (p.driftX > width + 50) p.driftX = -50;
+      if (p.driftY < -50) p.driftY = height + 50;
+      if (p.driftY > height + 50) p.driftY = -50;
+
+      // Interpolate between drift and lock target
+      p.x = p.driftX + (p.targetX - p.driftX) * convergence;
+      p.y = p.driftY + (p.targetY - p.driftY) * convergence;
+
+      // When locked, add subtle orbit
+      if (convergence > 0.8) {
+        const orbitScale = (convergence - 0.8) * 5;
+        p.x += Math.sin(p.angle + time * 0.001) * 2 * orbitScale;
+        p.y += Math.cos(p.angle + time * 0.001) * 2 * orbitScale;
+      }
+
+      // Glow
+      const glowRadius = p.radius * (2 + convergence * 3);
+      const gradient = ctx.createRadialGradient(
+        p.x,
+        p.y,
+        0,
+        p.x,
+        p.y,
+        glowRadius
+      );
+      gradient.addColorStop(0, p.color + "80");
+      gradient.addColorStop(1, p.color + "00");
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, glowRadius, 0, Math.PI * 2);
+      ctx.fillStyle = gradient;
+      ctx.fill();
+
+      // Core dot
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle =
+        p.color +
+        Math.floor((p.alpha + convergence * 0.3) * 255)
+          .toString(16)
+          .padStart(2, "0");
+      ctx.fill();
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  init();
+  requestAnimationFrame(draw);
+  window.addEventListener("resize", () => {
+    init();
+  });
+</script>

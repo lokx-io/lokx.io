@@ -1,0 +1,250 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const colors = {
+  backgrounds: [
+    { name: "Void", hex: "#050709", tw: "bg-lokx-void", desc: "Deepest background, page edges" },
+    { name: "Dark", hex: "#0a0e17", tw: "bg-lokx-dark", desc: "Main page background" },
+    { name: "Surface", hex: "#111827", tw: "bg-lokx-surface", desc: "Cards, panels, nav" },
+    { name: "Elevated", hex: "#1a2235", tw: "bg-lokx-elevated", desc: "Hover states, inputs, modals" },
+  ],
+  blues: [
+    { name: "Navy", hex: "#001233", tw: "bg-lokx-navy", desc: "Logo x, secondary actions" },
+    { name: "Primary", hex: "#0D65C7", tw: "bg-lokx-blue", desc: "Logo LOK, CTAs, links" },
+    { name: "Light", hex: "#60A5FA", tw: "bg-lokx-light", desc: "Hover accents, highlights" },
+    { name: "Pale", hex: "#93C5FD", tw: "bg-lokx-pale", desc: "Subtle emphasis, badges" },
+  ],
+  neutrals: [
+    { name: "White", hex: "#F9FAFB", tw: "bg-lokx-white", desc: "Headings, bold text" },
+    { name: "Text", hex: "#E5E7EB", tw: "bg-lokx-text", desc: "Body copy" },
+    { name: "Muted", hex: "#6B7280", tw: "bg-lokx-muted", desc: "Secondary text, captions" },
+    { name: "Dim", hex: "#374151", tw: "bg-lokx-dim", desc: "Disabled, placeholders" },
+    { name: "Border", hex: "#1F2937", tw: "bg-lokx-border", desc: "Dividers, card borders" },
+  ],
+  semantic: [
+    { name: "Success", hex: "#10B981", tw: "bg-lokx-success", desc: "Released, confirmed" },
+    { name: "Warning", hex: "#F59E0B", tw: "bg-lokx-warning", desc: "Pending, attention" },
+    { name: "Error", hex: "#EF4444", tw: "bg-lokx-error", desc: "Failed, blocked" },
+    { name: "Info", hex: "#3B82F6", tw: "bg-lokx-info", desc: "Informational, tips" },
+  ],
+};
+
+const typeSamples = [
+  { name: "Display", cls: "text-5xl font-bold", family: "Inter", weight: "700", size: "48px", sample: "Lock. Escrow. Release." },
+  { name: "Heading 1", cls: "text-3xl font-bold", family: "Inter", weight: "700", size: "30px", sample: "Privacy is not optional." },
+  { name: "Heading 2", cls: "text-xl font-semibold", family: "Inter", weight: "600", size: "20px", sample: "Three primitives. Infinite use cases." },
+  { name: "Body", cls: "text-base", family: "Inter", weight: "400", size: "16px", sample: "Privacy-preserving primitives for conditional digital asset release. One API. Zero trust required." },
+  { name: "Small", cls: "text-sm", family: "Inter", weight: "400", size: "14px", sample: "Built on Midnight. Pay with Dust." },
+  { name: "Caption", cls: "text-xs uppercase tracking-wider font-medium", family: "Inter", weight: "500", size: "12px", sample: "API-FIRST" },
+  { name: "Code", cls: "text-sm font-mono", family: "JetBrains Mono", weight: "400", size: "14px", sample: "lokx.lok({ asset, recipient, condition })" },
+];
+---
+
+<Layout title="LOKX.io — Brand">
+  <div class="max-w-5xl mx-auto px-6 py-24">
+
+    <!-- Header -->
+    <div class="mb-20">
+      <h1 class="text-4xl font-bold text-lokx-white mb-4">LOKX Brand</h1>
+      <p class="text-lokx-muted text-lg">Visual identity, colour palette, typography, and component patterns.</p>
+    </div>
+
+    <!-- Logo -->
+    <section class="mb-24">
+      <h2 class="text-xs uppercase tracking-wider font-medium text-lokx-blue mb-8">Logo</h2>
+
+      <h3 class="text-lokx-white text-sm font-medium mb-3">Original (for light backgrounds)</h3>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="rounded-xl border border-lokx-border bg-white p-12 flex items-center justify-center">
+          <img src="/logo.svg" alt="LOKX logo on light" class="h-16" />
+        </div>
+        <div class="rounded-xl border border-lokx-border bg-lokx-surface p-12 flex items-center justify-center">
+          <img src="/logo.svg" alt="LOKX logo on dark (original)" class="h-16" />
+        </div>
+      </div>
+
+      <h3 class="text-lokx-white text-sm font-medium mb-3 mt-6">Dark mode (for dark backgrounds)</h3>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="rounded-xl border border-lokx-border bg-lokx-dark p-12 flex items-center justify-center">
+          <img src="/logo-dark.svg" alt="LOKX dark mode logo" class="h-16" />
+        </div>
+        <div class="rounded-xl border border-lokx-border bg-lokx-void p-12 flex items-center justify-center">
+          <img src="/logo-dark.svg" alt="LOKX dark mode logo on void" class="h-16" />
+        </div>
+      </div>
+
+      <div class="mt-6 p-6 rounded-xl border border-lokx-border bg-lokx-surface">
+        <h3 class="text-lokx-white text-sm font-medium mb-2">Logo colours</h3>
+        <div class="space-y-2 text-sm">
+          <div class="flex flex-wrap gap-6">
+            <span class="text-lokx-muted">Light mode:</span>
+            <span><span class="text-lokx-muted">LOK</span> <span class="font-mono text-lokx-blue">Primary #0D65C7</span></span>
+            <span><span class="text-lokx-muted">x</span> <span class="font-mono text-lokx-text">Navy #001233</span></span>
+          </div>
+          <div class="flex flex-wrap gap-6">
+            <span class="text-lokx-muted">Dark mode:</span>
+            <span><span class="text-lokx-muted">LOK</span> <span class="font-mono text-lokx-white">White #FFFFFF</span></span>
+            <span><span class="text-lokx-muted">x</span> <span class="font-mono text-lokx-blue">Primary #0D65C7</span></span>
+          </div>
+        </div>
+        <p class="text-lokx-muted text-sm mt-3">Both variants use palette colours exclusively. The dark mode inverts the hierarchy: LOK goes white for contrast, x steps up from Navy to Primary.</p>
+      </div>
+    </section>
+
+    <!-- Colour Palette -->
+    <section class="mb-24">
+      <h2 class="text-xs uppercase tracking-wider font-medium text-lokx-blue mb-8">Colour Palette</h2>
+
+      <!-- Backgrounds -->
+      <h3 class="text-lokx-white font-semibold mb-4">Backgrounds</h3>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+        {colors.backgrounds.map((c) => (
+          <div class="rounded-xl border border-lokx-border overflow-hidden">
+            <div class="h-24 border-b border-lokx-border" style={`background-color: ${c.hex}`}></div>
+            <div class="p-3 bg-lokx-surface">
+              <div class="text-lokx-white text-sm font-medium">{c.name}</div>
+              <div class="text-lokx-muted text-xs font-mono">{c.hex}</div>
+              <div class="text-lokx-muted text-xs mt-1">{c.desc}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Blues -->
+      <h3 class="text-lokx-white font-semibold mb-4">Blues</h3>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+        {colors.blues.map((c) => (
+          <div class="rounded-xl border border-lokx-border overflow-hidden">
+            <div class="h-24 border-b border-lokx-border" style={`background-color: ${c.hex}`}></div>
+            <div class="p-3 bg-lokx-surface">
+              <div class="text-lokx-white text-sm font-medium">{c.name}</div>
+              <div class="text-lokx-muted text-xs font-mono">{c.hex}</div>
+              <div class="text-lokx-muted text-xs mt-1">{c.desc}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Neutrals -->
+      <h3 class="text-lokx-white font-semibold mb-4">Neutrals</h3>
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-10">
+        {colors.neutrals.map((c) => (
+          <div class="rounded-xl border border-lokx-border overflow-hidden">
+            <div class="h-24 border-b border-lokx-border" style={`background-color: ${c.hex}`}></div>
+            <div class="p-3 bg-lokx-surface">
+              <div class="text-lokx-white text-sm font-medium">{c.name}</div>
+              <div class="text-lokx-muted text-xs font-mono">{c.hex}</div>
+              <div class="text-lokx-muted text-xs mt-1">{c.desc}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Semantic -->
+      <h3 class="text-lokx-white font-semibold mb-4">Semantic</h3>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {colors.semantic.map((c) => (
+          <div class="rounded-xl border border-lokx-border overflow-hidden">
+            <div class="h-24 border-b border-lokx-border" style={`background-color: ${c.hex}`}></div>
+            <div class="p-3 bg-lokx-surface">
+              <div class="text-lokx-white text-sm font-medium">{c.name}</div>
+              <div class="text-lokx-muted text-xs font-mono">{c.hex}</div>
+              <div class="text-lokx-muted text-xs mt-1">{c.desc}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Typography -->
+    <section class="mb-24">
+      <h2 class="text-xs uppercase tracking-wider font-medium text-lokx-blue mb-8">Typography</h2>
+
+      <div class="space-y-0 rounded-xl border border-lokx-border overflow-hidden">
+        {typeSamples.map((t, i) => (
+          <div class:list={["p-6 bg-lokx-surface flex flex-col md:flex-row md:items-center gap-4", i > 0 && "border-t border-lokx-border"]}>
+            <div class="md:w-48 shrink-0">
+              <div class="text-lokx-white text-sm font-medium">{t.name}</div>
+              <div class="text-lokx-muted text-xs">{t.family} {t.weight} / {t.size}</div>
+            </div>
+            <div class:list={["text-lokx-text", t.cls]}>
+              {t.sample}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div class="mt-6 p-6 rounded-xl border border-lokx-border bg-lokx-surface">
+        <h3 class="text-lokx-white font-semibold mb-3">Font stack</h3>
+        <div class="space-y-2 text-sm">
+          <div><span class="text-lokx-muted">Primary:</span> <span class="text-lokx-text">Inter &mdash; headings, body, UI</span></div>
+          <div><span class="text-lokx-muted">Mono:</span> <span class="text-lokx-text font-mono">JetBrains Mono &mdash; code, API references, primitives</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Components -->
+    <section class="mb-24">
+      <h2 class="text-xs uppercase tracking-wider font-medium text-lokx-blue mb-8">Components</h2>
+
+      <!-- Buttons -->
+      <h3 class="text-lokx-white font-semibold mb-4">Buttons</h3>
+      <div class="p-8 rounded-xl border border-lokx-border bg-lokx-surface flex flex-wrap items-center gap-4 mb-10">
+        <button class="px-5 py-2.5 bg-lokx-blue hover:bg-lokx-blue/90 text-white font-medium rounded-lg text-sm transition-colors">Primary</button>
+        <button class="px-5 py-2.5 border border-lokx-border hover:border-lokx-muted text-lokx-text font-medium rounded-lg text-sm transition-colors">Secondary</button>
+        <button class="px-5 py-2.5 text-lokx-blue hover:text-lokx-light font-medium rounded-lg text-sm transition-colors">Ghost</button>
+        <button class="px-5 py-2.5 bg-lokx-blue/10 text-lokx-light font-medium rounded-lg text-sm">Subtle</button>
+      </div>
+
+      <!-- Badges -->
+      <h3 class="text-lokx-white font-semibold mb-4">Badges</h3>
+      <div class="p-8 rounded-xl border border-lokx-border bg-lokx-surface flex flex-wrap items-center gap-4 mb-10">
+        <span class="px-3 py-1 text-xs font-medium tracking-wider uppercase text-lokx-blue border border-lokx-blue/30 rounded-full bg-lokx-blue/5">Built on Midnight</span>
+        <span class="px-3 py-1 text-xs font-medium tracking-wider uppercase text-lokx-success border border-lokx-success/30 rounded-full bg-lokx-success/5">Released</span>
+        <span class="px-3 py-1 text-xs font-medium tracking-wider uppercase text-lokx-warning border border-lokx-warning/30 rounded-full bg-lokx-warning/5">Pending</span>
+        <span class="px-3 py-1 text-xs font-medium tracking-wider uppercase text-lokx-error border border-lokx-error/30 rounded-full bg-lokx-error/5">Locked</span>
+      </div>
+
+      <!-- Cards -->
+      <h3 class="text-lokx-white font-semibold mb-4">Cards</h3>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="p-8 rounded-xl border border-lokx-border bg-lokx-surface">
+          <div class="text-2xl font-bold text-white mb-4">LOK</div>
+          <p class="text-lokx-muted leading-relaxed text-sm">Default state.</p>
+        </div>
+        <div class="p-8 rounded-xl border border-lokx-blue/50 bg-lokx-surface">
+          <div class="text-2xl font-bold text-white mb-4">LOK</div>
+          <p class="text-lokx-muted leading-relaxed text-sm">Hover state with blue border.</p>
+        </div>
+        <div class="p-8 rounded-xl border border-lokx-blue/30 bg-lokx-blue/5">
+          <div class="text-2xl font-bold text-white mb-4">LOK</div>
+          <p class="text-lokx-muted leading-relaxed text-sm">Active/selected with blue tint.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Design Principles -->
+    <section class="mb-24">
+      <h2 class="text-xs uppercase tracking-wider font-medium text-lokx-blue mb-8">Design Principles</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="p-6 rounded-xl border border-lokx-border bg-lokx-surface">
+          <div class="text-lokx-white font-semibold mb-2">Invisible complexity</div>
+          <p class="text-lokx-muted text-sm">ZK proofs, smart contracts, threshold signatures &mdash; the user never sees any of it. Google-like simplicity on top of deep cryptographic infrastructure.</p>
+        </div>
+        <div class="p-6 rounded-xl border border-lokx-border bg-lokx-surface">
+          <div class="text-lokx-white font-semibold mb-2">API-first</div>
+          <p class="text-lokx-muted text-sm">The UI is a reference client. Most integrations are programmatic. Design for developers reading docs, not users clicking through wizards.</p>
+        </div>
+        <div class="p-6 rounded-xl border border-lokx-border bg-lokx-surface">
+          <div class="text-lokx-white font-semibold mb-2">Dark by default</div>
+          <p class="text-lokx-muted text-sm">Midnight is in the name. The dark palette isn't just aesthetic &mdash; it signals privacy, security, and seriousness. No light mode.</p>
+        </div>
+        <div class="p-6 rounded-xl border border-lokx-border bg-lokx-surface">
+          <div class="text-lokx-white font-semibold mb-2">Show, don't tell</div>
+          <p class="text-lokx-muted text-sm">Code examples over marketing copy. Concrete use cases over abstract promises. The API snippet is more persuasive than any tagline.</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</Layout>

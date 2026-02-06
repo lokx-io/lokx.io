@@ -1,0 +1,282 @@
+---
+import Layout from "../layouts/Layout.astro";
+import HeroCanvas from "../components/HeroCanvas.astro";
+---
+
+<Layout>
+  <!-- Nav -->
+  <nav class="fixed top-0 w-full z-50 border-b border-lokx-border/50 bg-lokx-dark/80 backdrop-blur-md">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="/">
+        <img src="/logo-dark.svg" alt="LOKX" class="h-8" />
+      </a>
+      <div class="flex items-center gap-6">
+        <a
+          href="https://github.com/lokx-io"
+          target="_blank"
+          rel="noopener"
+          class="text-lokx-muted hover:text-white transition-colors text-sm"
+        >
+          GitHub
+        </a>
+        <a
+          href="https://x.com/LOKXops"
+          target="_blank"
+          rel="noopener"
+          class="text-lokx-muted hover:text-white transition-colors text-sm"
+        >
+          @LOKXops
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="min-h-screen flex items-center justify-center px-6 pt-16 relative overflow-hidden">
+    <HeroCanvas />
+    <div class="max-w-3xl mx-auto text-center relative z-10">
+      <div class="mb-8">
+        <span class="inline-block px-3 py-1 text-xs font-medium tracking-wider uppercase text-lokx-blue border border-lokx-blue/30 rounded-full bg-lokx-blue/5">
+          Built on Midnight
+        </span>
+      </div>
+
+      <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white leading-tight mb-6">
+        Lock. Escrow. Release.
+      </h1>
+
+      <p class="text-lg sm:text-xl text-lokx-muted max-w-2xl mx-auto mb-12 leading-relaxed">
+        Privacy-preserving primitives for conditional digital asset release.
+        One API. Zero trust required.
+      </p>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a
+          href="https://github.com/lokx-io"
+          target="_blank"
+          rel="noopener"
+          class="px-6 py-3 bg-lokx-blue hover:bg-lokx-blue/90 text-white font-medium rounded-lg transition-colors text-sm"
+        >
+          View on GitHub
+        </a>
+        <a
+          href="#primitives"
+          class="px-6 py-3 border border-lokx-border hover:border-lokx-muted text-lokx-text font-medium rounded-lg transition-colors text-sm"
+        >
+          How it works
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Primitives -->
+  <section id="primitives" class="py-32 px-6">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-sm font-medium tracking-wider uppercase text-lokx-blue mb-12 text-center">
+        Three primitives. Infinite use cases.
+      </h2>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="p-8 rounded-xl border border-lokx-border bg-lokx-surface">
+          <div class="text-2xl font-bold text-white mb-4">LOK</div>
+          <p class="text-lokx-muted leading-relaxed">
+            Lock any digital asset with conditions you define. Time-based, event-driven, or on-demand.
+            The asset is encrypted and held in escrow until conditions trigger.
+          </p>
+        </div>
+
+        <div class="p-8 rounded-xl border border-lokx-border bg-lokx-surface">
+          <div class="text-2xl font-bold text-white mb-4">RELEASE</div>
+          <p class="text-lokx-muted leading-relaxed">
+            Conditions met. Asset released. Zero-knowledge proofs verify the trigger
+            without revealing the condition or parties involved.
+          </p>
+        </div>
+
+        <div class="p-8 rounded-xl border border-lokx-border bg-lokx-surface">
+          <div class="text-2xl font-bold text-white mb-4">ESCROW</div>
+          <p class="text-lokx-muted leading-relaxed">
+            Two-party conditional exchange. No intermediary, no counterparty risk.
+            The smart contract is the only trusted party.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- API-first -->
+  <section class="py-32 px-6 border-t border-lokx-border/50">
+    <div class="max-w-6xl mx-auto">
+      <div class="grid md:grid-cols-2 gap-16 items-center">
+        <div>
+          <h2 class="text-sm font-medium tracking-wider uppercase text-lokx-blue mb-4">
+            API-first
+          </h2>
+          <h3 class="text-3xl font-bold text-white mb-6">
+            Integrate in minutes.
+          </h3>
+          <p class="text-lokx-muted leading-relaxed mb-6">
+            Most users never touch the UI. Lock and release assets programmatically
+            with a simple REST API. Pay transaction fees in Dust.
+          </p>
+          <ul class="space-y-3 text-lokx-muted">
+            <li class="flex items-start gap-3">
+              <span class="text-lokx-blue mt-1">&#9656;</span>
+              Lock assets with a single POST
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-lokx-blue mt-1">&#9656;</span>
+              Define conditions as simple JSON
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-lokx-blue mt-1">&#9656;</span>
+              Webhook notifications on release
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-lokx-blue mt-1">&#9656;</span>
+              Full TypeScript SDK
+            </li>
+          </ul>
+        </div>
+
+        <div class="bg-lokx-surface border border-lokx-border rounded-xl p-6 font-mono text-sm overflow-x-auto">
+          <div class="flex items-center gap-2 mb-4 text-lokx-muted text-xs">
+            <span class="w-3 h-3 rounded-full bg-red-500/60"></span>
+            <span class="w-3 h-3 rounded-full bg-yellow-500/60"></span>
+            <span class="w-3 h-3 rounded-full bg-green-500/60"></span>
+          </div>
+          <pre class="text-lokx-text" set:html={`<code><span class="text-lokx-muted">// Lock an asset with a time condition</span>
+<span class="text-lokx-blue">const</span> lock = <span class="text-lokx-blue">await</span> lokx.lok({
+  asset: <span class="text-green-400">"deed://20-sun-drive"</span>,
+  recipient: <span class="text-green-400">"$bob"</span>,
+  condition: {
+    type: <span class="text-green-400">"date"</span>,
+    trigger: <span class="text-green-400">"2027-01-01"</span>
+  }
+});
+
+<span class="text-lokx-muted">// That's it. Bob gets access on Jan 1 2027.</span>
+<span class="text-lokx-muted">// Neither party can tamper. Nobody else can see.</span></code>`} />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Use cases -->
+  <section class="py-32 px-6 border-t border-lokx-border/50">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-sm font-medium tracking-wider uppercase text-lokx-blue mb-4 text-center">
+        Use cases
+      </h2>
+      <h3 class="text-3xl font-bold text-white mb-16 text-center">
+        If it can be locked, it can be LOK'd.
+      </h3>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="p-6 rounded-xl border border-lokx-border/50 hover:border-lokx-border transition-colors">
+          <div class="text-white font-semibold mb-2">Inheritance</div>
+          <p class="text-lokx-muted text-sm">Release assets to beneficiaries on a verified life event. No lawyer. No probate.</p>
+        </div>
+
+        <div class="p-6 rounded-xl border border-lokx-border/50 hover:border-lokx-border transition-colors">
+          <div class="text-white font-semibold mb-2">Rental deposits</div>
+          <p class="text-lokx-muted text-sm">Lock deposit at lease start. Auto-release when the term ends. Both parties hold proof.</p>
+        </div>
+
+        <div class="p-6 rounded-xl border border-lokx-border/50 hover:border-lokx-border transition-colors">
+          <div class="text-white font-semibold mb-2">Trade finance</div>
+          <p class="text-lokx-muted text-sm">Release payment when goods arrive in expected condition. Oracle-verified delivery.</p>
+        </div>
+
+        <div class="p-6 rounded-xl border border-lokx-border/50 hover:border-lokx-border transition-colors">
+          <div class="text-white font-semibold mb-2">Secure vault</div>
+          <p class="text-lokx-muted text-sm">Store documents, keys, or credentials. On-demand self-release. Encrypted at rest.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Midnight -->
+  <section class="py-32 px-6 border-t border-lokx-border/50">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="text-sm font-medium tracking-wider uppercase text-lokx-blue mb-4">
+        Why Midnight
+      </h2>
+      <h3 class="text-3xl font-bold text-white mb-6">
+        Privacy is not optional.
+      </h3>
+      <p class="text-lokx-muted leading-relaxed mb-8">
+        LOKX is built exclusively on Midnight &mdash; a privacy-first blockchain with
+        zero-knowledge proof capabilities. Your conditions, your assets, and your
+        identity are shielded by default. Threshold signatures across multiple
+        validators eliminate single points of trust.
+      </p>
+      <div class="grid sm:grid-cols-3 gap-8 mt-12 text-left">
+        <div>
+          <div class="text-white font-semibold mb-2">ZK proofs</div>
+          <p class="text-lokx-muted text-sm">Conditions verified without revealing what they are.</p>
+        </div>
+        <div>
+          <div class="text-white font-semibold mb-2">Threshold sigs</div>
+          <p class="text-lokx-muted text-sm">n-of-m validators. No single oracle can collude or fail.</p>
+        </div>
+        <div>
+          <div class="text-white font-semibold mb-2">Dust payments</div>
+          <p class="text-lokx-muted text-sm">Native Midnight token. Low fees. No intermediary tokens.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-16 px-6 border-t border-lokx-border/50">
+    <div class="max-w-6xl mx-auto">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+        <!-- Brand -->
+        <div class="sm:col-span-2 lg:col-span-1">
+          <img src="/logo-dark.svg" alt="LOKX" class="h-7 mb-4" />
+          <p class="text-lokx-muted text-sm leading-relaxed">
+            Privacy-preserving lock and escrow primitives for digital assets. Built on Midnight.
+          </p>
+        </div>
+
+        <!-- Product -->
+        <div>
+          <h4 class="text-lokx-white text-sm font-semibold mb-4">Product</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#primitives" class="text-lokx-muted hover:text-white transition-colors">Primitives</a></li>
+            <li><a href="#" class="text-lokx-dim cursor-default">API Docs <span class="text-lokx-blue text-xs ml-1">soon</span></a></li>
+            <li><a href="#" class="text-lokx-dim cursor-default">SDK <span class="text-lokx-blue text-xs ml-1">soon</span></a></li>
+          </ul>
+        </div>
+
+        <!-- Developers -->
+        <div>
+          <h4 class="text-lokx-white text-sm font-semibold mb-4">Developers</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="https://github.com/lokx-io" target="_blank" rel="noopener" class="text-lokx-muted hover:text-white transition-colors">GitHub</a></li>
+            <li><a href="/brand/" class="text-lokx-muted hover:text-white transition-colors">Brand</a></li>
+          </ul>
+        </div>
+
+        <!-- Connect -->
+        <div>
+          <h4 class="text-lokx-white text-sm font-semibold mb-4">Connect</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="https://x.com/LOKXops" target="_blank" rel="noopener" class="text-lokx-muted hover:text-white transition-colors">@LOKXops</a></li>
+            <li><a href="mailto:support@lokx.io" class="text-lokx-muted hover:text-white transition-colors">support@lokx.io</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Bottom bar -->
+      <div class="pt-8 border-t border-lokx-border/50 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-lokx-dim text-xs">&copy; 2025 LOKX.io. All rights reserved.</p>
+        <div class="flex items-center gap-6 text-xs">
+          <a href="#" class="text-lokx-dim hover:text-lokx-muted transition-colors">Privacy Policy</a>
+          <a href="#" class="text-lokx-dim hover:text-lokx-muted transition-colors">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</Layout>

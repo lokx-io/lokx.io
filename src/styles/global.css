@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+@theme {
+  /* Backgrounds */
+  --color-lokx-void: #050709;
+  --color-lokx-dark: #0a0e17;
+  --color-lokx-surface: #111827;
+  --color-lokx-elevated: #1a2235;
+
+  /* Blues — derived from logo (#0D65C7 LOK, #001233 x) */
+  --color-lokx-navy: #001233;
+  --color-lokx-blue: #0d65c7;
+  --color-lokx-light: #60a5fa;
+  --color-lokx-pale: #93c5fd;
+
+  /* Neutrals */
+  --color-lokx-white: #f9fafb;
+  --color-lokx-text: #e5e7eb;
+  --color-lokx-muted: #6b7280;
+  --color-lokx-dim: #374151;
+  --color-lokx-border: #1f2937;
+
+  /* Semantic */
+  --color-lokx-success: #10b981;
+  --color-lokx-warning: #f59e0b;
+  --color-lokx-error: #ef4444;
+  --color-lokx-info: #3b82f6;
+
+  /* Fonts */
+  --font-family-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-family-mono: "JetBrains Mono", "Fira Code", monospace;
+}
