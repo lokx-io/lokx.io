@@ -66,76 +66,77 @@
     return points;
   }
 
-  // Sample points from rendered "LOKx" text with a rectangular border
+  // Logo "x" shape — traced from the actual SVG path geometry
+  // Outer: pentagon (rect with V-notch on left), Inner: X letterform
   function getLogoPoints(count: number): { x: number; y: number }[] {
-    // Border rectangle — matches padlock body proportions
-    const borderTop = -0.35;
-    const borderBottom = 0.35;
-    const borderLeft = -0.55;
-    const borderRight = 0.55;
-    const borderCount = Math.floor(count * 0.35);
-    const textCount = count - borderCount;
+    // Outer pentagon — the border around the X (from SVG path 2, outer subpath)
+    const outer = [
+      { x: -0.141, y: -0.418 }, // top-left (where V meets top edge)
+      { x: -0.450, y: -0.013 }, // left apex (V point)
+      { x: -0.140, y:  0.418 }, // bottom-left (where V meets bottom edge)
+      { x:  0.450, y:  0.417 }, // bottom-right
+      { x:  0.449, y: -0.418 }, // top-right
+    ];
 
-    const points: { x: number; y: number }[] = [];
+    // Inner X letterform (from SVG path 2, inner subpath)
+    const inner = [
+      { x: -0.230, y: -0.281 },
+      { x: -0.037, y: -0.281 },
+      { x:  0.060, y: -0.151 },
+      { x:  0.162, y: -0.281 },
+      { x:  0.382, y: -0.281 },
+      { x:  0.172, y:  0.001 },
+      { x:  0.382, y:  0.281 },
+      { x:  0.167, y:  0.282 },
+      { x:  0.062, y:  0.149 },
+      { x: -0.036, y:  0.281 },
+      { x: -0.222, y:  0.281 },
+      { x: -0.246, y:  0.247 },
+      { x: -0.055, y: -0.001 },
+      { x: -0.253, y: -0.252 },
+    ];
 
-    // Border perimeter points
-    const w = borderRight - borderLeft;
-    const h = borderBottom - borderTop;
-    const perimeter = 2 * w + 2 * h;
-    for (let i = 0; i < borderCount; i++) {
-      const p = (i / borderCount) * perimeter;
-      let x: number, y: number;
-      if (p < w) {
-        x = borderLeft + p;
-        y = borderTop;
-      } else if (p < w + h) {
-        x = borderRight;
-        y = borderTop + (p - w);
-      } else if (p < 2 * w + h) {
-        x = borderRight - (p - w - h);
-        y = borderBottom;
-      } else {
-        x = borderLeft;
-        y = borderBottom - (p - 2 * w - h);
+    // Distribute points along polygon perimeters
+    function tracePerimeter(
+      verts: { x: number; y: number }[],
+      n: number
+    ): { x: number; y: number }[] {
+      const segs: number[] = [];
+      let total = 0;
+      for (let i = 0; i < verts.length; i++) {
+        const next = verts[(i + 1) % verts.length];
+        const dx = next.x - verts[i].x;
+        const dy = next.y - verts[i].y;
+        const len = Math.sqrt(dx * dx + dy * dy);
+        segs.push(len);
+        total += len;
       }
-      points.push({ x, y });
-    }
-
-    // Text pixels
-    const offscreen = document.createElement("canvas");
-    const size = 200;
-    offscreen.width = size;
-    offscreen.height = size;
-    const offCtx = offscreen.getContext("2d")!;
-
-    offCtx.fillStyle = "#000";
-    offCtx.textAlign = "center";
-    offCtx.textBaseline = "middle";
-    offCtx.font = "bold 60px Inter, system-ui, sans-serif";
-    offCtx.fillText("LOKx", size / 2, size / 2);
-
-    const imageData = offCtx.getImageData(0, 0, size, size);
-    const filled: { x: number; y: number }[] = [];
-    for (let y = 0; y < size; y += 2) {
-      for (let x = 0; x < size; x += 2) {
-        if (imageData.data[(y * size + x) * 4 + 3] > 128) {
-          filled.push({
-            x: (x / size - 0.5) * 2,
-            y: (y / size - 0.5) * 2,
-          });
+      const pts: { x: number; y: number }[] = [];
+      for (let i = 0; i < n; i++) {
+        let d = (i / n) * total;
+        for (let s = 0; s < segs.length; s++) {
+          if (d <= segs[s]) {
+            const t = d / segs[s];
+            const next = verts[(s + 1) % verts.length];
+            pts.push({
+              x: verts[s].x + (next.x - verts[s].x) * t,
+              y: verts[s].y + (next.y - verts[s].y) * t,
+            });
+            break;
+          }
+          d -= segs[s];
         }
       }
+      return pts;
     }
 
-    const step = Math.max(1, Math.floor(filled.length / textCount));
-    for (let i = 0; i < textCount && i * step < filled.length; i++) {
-      points.push(filled[i * step]);
-    }
-    while (points.length < count) {
-      points.push(filled[Math.floor(Math.random() * filled.length)]);
-    }
+    const outerCount = Math.floor(count * 0.4);
+    const innerCount = count - outerCount;
 
-    return points;
+    return [
+      ...tracePerimeter(outer, outerCount),
+      ...tracePerimeter(inner, innerCount),
+    ];
   }
 
   interface Particle {
