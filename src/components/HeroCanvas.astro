@@ -13,6 +13,13 @@
   let time = 0;
   let cycleCount = 0; // alternates between padlock (even) and logo (odd)
 
+  // Mouse tracking
+  let mouseX = -1000;
+  let mouseY = -1000;
+  let mouseActive = false;
+  const MOUSE_RADIUS = 120;
+  const MOUSE_FORCE = 8;
+
   const PARTICLE_COUNT = 180;
   const COLORS = ["#0D65C7", "#60A5FA", "#93C5FD", "#2563EB", "#1E40AF"];
 
@@ -289,6 +296,18 @@
       p.driftX += p.vx + Math.sin(time * p.speed) * 0.3;
       p.driftY += p.vy + Math.cos(time * p.speed * 0.7) * 0.3;
 
+      // Mouse repulsion during drift phase
+      if (mouseActive && convergence < 0.15) {
+        const mdx = p.driftX - mouseX;
+        const mdy = p.driftY - mouseY;
+        const mDist = Math.sqrt(mdx * mdx + mdy * mdy);
+        if (mDist < MOUSE_RADIUS && mDist > 0) {
+          const force = (1 - mDist / MOUSE_RADIUS) * MOUSE_FORCE * (1 - convergence / 0.15);
+          p.driftX += (mdx / mDist) * force;
+          p.driftY += (mdy / mDist) * force;
+        }
+      }
+
       // Wrap around edges with padding
       if (p.driftX < -50) p.driftX = width + 50;
       if (p.driftX > width + 50) p.driftX = -50;
@@ -341,5 +360,14 @@
   requestAnimationFrame(draw);
   window.addEventListener("resize", () => {
     init();
+  });
+  canvas.addEventListener("mousemove", (e) => {
+    const rect = canvas.getBoundingClientRect();
+    mouseX = e.clientX - rect.left;
+    mouseY = e.clientY - rect.top;
+    mouseActive = true;
+  });
+  canvas.addEventListener("mouseleave", () => {
+    mouseActive = false;
   });
 </script>

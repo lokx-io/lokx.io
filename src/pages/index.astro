@@ -50,12 +50,29 @@ import HeroCanvas from "../components/HeroCanvas.astro";
         One API. Zero trust required.
       </p>
 
+      <form id="signup-form" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto w-full mb-8">
+        <input
+          type="email"
+          name="email"
+          required
+          placeholder="you@example.com"
+          class="flex-1 px-4 py-3 rounded-lg bg-lokx-surface border border-lokx-border text-lokx-text placeholder:text-lokx-dim focus:outline-none focus:border-lokx-blue/60 text-sm"
+        />
+        <button
+          type="submit"
+          class="px-6 py-3 bg-lokx-blue hover:bg-lokx-blue/90 text-white font-medium rounded-lg transition-colors text-sm whitespace-nowrap"
+        >
+          Get early access
+        </button>
+      </form>
+      <p id="signup-msg" class="text-xs text-lokx-muted mb-8 hidden"></p>
+
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
         <a
           href="https://github.com/lokx-io"
           target="_blank"
           rel="noopener"
-          class="px-6 py-3 bg-lokx-blue hover:bg-lokx-blue/90 text-white font-medium rounded-lg transition-colors text-sm"
+          class="px-6 py-3 border border-lokx-border hover:border-lokx-muted text-lokx-text font-medium rounded-lg transition-colors text-sm"
         >
           View on GitHub
         </a>
@@ -66,6 +83,23 @@ import HeroCanvas from "../components/HeroCanvas.astro";
           How it works
         </a>
       </div>
+
+      <script>
+        const form = document.getElementById("signup-form") as HTMLFormElement;
+        const msg = document.getElementById("signup-msg")!;
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const email = new FormData(form).get("email") || (form.querySelector("input") as HTMLInputElement).value;
+          const stored = JSON.parse(localStorage.getItem("lokx-signups") || "[]");
+          if (!stored.includes(email)) {
+            stored.push(email);
+            localStorage.setItem("lokx-signups", JSON.stringify(stored));
+          }
+          form.classList.add("hidden");
+          msg.textContent = "You're on the list. We'll be in touch.";
+          msg.classList.remove("hidden");
+        });
+      </script>
     </div>
   </section>
 
