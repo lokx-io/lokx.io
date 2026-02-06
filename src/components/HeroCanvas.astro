@@ -11,7 +11,7 @@
   let height = 0;
   let particles: Particle[] = [];
   let time = 0;
-  let phase = 0; // 0 = drifting, 1 = converging to lock, 2 = locked, 3 = dispersing
+  let cycleCount = 0; // alternates between padlock (even) and logo (odd)
 
   const PARTICLE_COUNT = 120;
   const COLORS = ["#0D65C7", "#60A5FA", "#93C5FD", "#2563EB", "#1E40AF"];
@@ -66,6 +66,49 @@
     return points;
   }
 
+  // Sample points from rendered "LOKx" text
+  function getLogoPoints(count: number): { x: number; y: number }[] {
+    const offscreen = document.createElement("canvas");
+    const size = 200;
+    offscreen.width = size;
+    offscreen.height = size;
+    const offCtx = offscreen.getContext("2d")!;
+
+    // Render LOKx text
+    offCtx.fillStyle = "#000";
+    offCtx.textAlign = "center";
+    offCtx.textBaseline = "middle";
+    offCtx.font = "bold 60px Inter, system-ui, sans-serif";
+    offCtx.fillText("LOKx", size / 2, size / 2);
+
+    // Sample filled pixels
+    const imageData = offCtx.getImageData(0, 0, size, size);
+    const filled: { x: number; y: number }[] = [];
+    for (let y = 0; y < size; y += 2) {
+      for (let x = 0; x < size; x += 2) {
+        if (imageData.data[(y * size + x) * 4 + 3] > 128) {
+          filled.push({
+            x: (x / size - 0.5) * 2,
+            y: (y / size - 0.5) * 2,
+          });
+        }
+      }
+    }
+
+    // Pick evenly distributed subset
+    const points: { x: number; y: number }[] = [];
+    const step = Math.max(1, Math.floor(filled.length / count));
+    for (let i = 0; i < count && i * step < filled.length; i++) {
+      points.push(filled[i * step]);
+    }
+    // Fill any remainder with random picks
+    while (points.length < count) {
+      points.push(filled[Math.floor(Math.random() * filled.length)]);
+    }
+
+    return points;
+  }
+
   interface Particle {
     x: number;
     y: number;
@@ -94,16 +137,35 @@
     ctx.scale(dpr, dpr);
   }
 
+  let lockTargets: { x: number; y: number }[] = [];
+  let logoTargets: { x: number; y: number }[] = [];
+
+  function applyTargets(shape: "lock" | "logo") {
+    const cx = width / 2;
+    const cy = height / 2;
+    const scale = Math.min(width, height) * 0.35;
+    const points = shape === "lock" ? lockTargets : logoTargets;
+
+    for (let i = 0; i < particles.length; i++) {
+      const p = points[i];
+      particles[i].targetX = cx + p.x * scale;
+      particles[i].targetY = cy + p.y * scale;
+    }
+  }
+
   function init() {
     resize();
-    const lockPoints = getLockPoints(PARTICLE_COUNT);
+    lockTargets = getLockPoints(PARTICLE_COUNT);
+    logoTargets = getLogoPoints(PARTICLE_COUNT);
     particles = [];
 
+    const cx = width / 2;
+    const cy = height / 2;
+    const scale = Math.min(width, height) * 0.35;
+    const initialPoints = cycleCount % 2 === 0 ? lockTargets : logoTargets;
+
     for (let i = 0; i < PARTICLE_COUNT; i++) {
-      const lp = lockPoints[i];
-      const cx = width / 2;
-      const cy = height / 2;
-      const scale = Math.min(width, height) * 0.35;
+      const lp = initialPoints[i];
 
       particles.push({
         x: Math.random() * width,
@@ -137,9 +199,19 @@
     return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   }
 
+  let lastCycleIndex = 0;
+
   function draw(timestamp: number) {
     time = timestamp;
+    const cycleIndex = Math.floor(time / TOTAL_CYCLE);
     const cycleTime = time % TOTAL_CYCLE;
+
+    // Swap targets at the start of each new cycle
+    if (cycleIndex !== lastCycleIndex) {
+      lastCycleIndex = cycleIndex;
+      cycleCount = cycleIndex;
+      applyTargets(cycleIndex % 2 === 0 ? "lock" : "logo");
+    }
 
     let convergence = 0;
     if (cycleTime < DRIFT_DURATION) {
