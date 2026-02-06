@@ -87,17 +87,28 @@ import HeroCanvas from "../components/HeroCanvas.astro";
       <script>
         const form = document.getElementById("signup-form") as HTMLFormElement;
         const msg = document.getElementById("signup-msg")!;
-        form.addEventListener("submit", (e) => {
+        form.addEventListener("submit", async (e) => {
           e.preventDefault();
-          const email = new FormData(form).get("email") || (form.querySelector("input") as HTMLInputElement).value;
-          const stored = JSON.parse(localStorage.getItem("lokx-signups") || "[]");
-          if (!stored.includes(email)) {
-            stored.push(email);
-            localStorage.setItem("lokx-signups", JSON.stringify(stored));
+          const email = (form.querySelector("input") as HTMLInputElement).value;
+          const btn = form.querySelector("button") as HTMLButtonElement;
+          btn.disabled = true;
+          btn.textContent = "...";
+          try {
+            const res = await fetch("/api/signup", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email }),
+            });
+            if (!res.ok) throw new Error();
+            form.classList.add("hidden");
+            msg.textContent = "You're on the list. We'll be in touch.";
+            msg.classList.remove("hidden");
+          } catch {
+            btn.disabled = false;
+            btn.textContent = "Get early access";
+            msg.textContent = "Something went wrong. Try again.";
+            msg.classList.remove("hidden");
           }
-          form.classList.add("hidden");
-          msg.textContent = "You're on the list. We'll be in touch.";
-          msg.classList.remove("hidden");
         });
       </script>
     </div>
