@@ -66,22 +66,54 @@
     return points;
   }
 
-  // Sample points from rendered "LOKx" text
+  // Sample points from rendered "LOKx" text with a rectangular border
   function getLogoPoints(count: number): { x: number; y: number }[] {
+    // Border rectangle — matches padlock body proportions
+    const borderTop = -0.35;
+    const borderBottom = 0.35;
+    const borderLeft = -0.55;
+    const borderRight = 0.55;
+    const borderCount = Math.floor(count * 0.35);
+    const textCount = count - borderCount;
+
+    const points: { x: number; y: number }[] = [];
+
+    // Border perimeter points
+    const w = borderRight - borderLeft;
+    const h = borderBottom - borderTop;
+    const perimeter = 2 * w + 2 * h;
+    for (let i = 0; i < borderCount; i++) {
+      const p = (i / borderCount) * perimeter;
+      let x: number, y: number;
+      if (p < w) {
+        x = borderLeft + p;
+        y = borderTop;
+      } else if (p < w + h) {
+        x = borderRight;
+        y = borderTop + (p - w);
+      } else if (p < 2 * w + h) {
+        x = borderRight - (p - w - h);
+        y = borderBottom;
+      } else {
+        x = borderLeft;
+        y = borderBottom - (p - 2 * w - h);
+      }
+      points.push({ x, y });
+    }
+
+    // Text pixels
     const offscreen = document.createElement("canvas");
     const size = 200;
     offscreen.width = size;
     offscreen.height = size;
     const offCtx = offscreen.getContext("2d")!;
 
-    // Render LOKx text
     offCtx.fillStyle = "#000";
     offCtx.textAlign = "center";
     offCtx.textBaseline = "middle";
     offCtx.font = "bold 60px Inter, system-ui, sans-serif";
     offCtx.fillText("LOKx", size / 2, size / 2);
 
-    // Sample filled pixels
     const imageData = offCtx.getImageData(0, 0, size, size);
     const filled: { x: number; y: number }[] = [];
     for (let y = 0; y < size; y += 2) {
@@ -95,13 +127,10 @@
       }
     }
 
-    // Pick evenly distributed subset
-    const points: { x: number; y: number }[] = [];
-    const step = Math.max(1, Math.floor(filled.length / count));
-    for (let i = 0; i < count && i * step < filled.length; i++) {
+    const step = Math.max(1, Math.floor(filled.length / textCount));
+    for (let i = 0; i < textCount && i * step < filled.length; i++) {
       points.push(filled[i * step]);
     }
-    // Fill any remainder with random picks
     while (points.length < count) {
       points.push(filled[Math.floor(Math.random() * filled.length)]);
     }
